@@ -109,6 +109,19 @@ class pyshell(cmd.Cmd):
         cwd = os.getcwd()
         print("\n",open(f"{cwd}{arg}", "r").read(),"\n")
     
+    def do_writefile(self,arg): # writes files
+        print("File Input / Receive Program")
+        filename = input("File Name >")
+        file = open(filename, "a")
+        while True:
+            contents = input("CONTENTS (\"***!!!EXITTYPE!!!***\" To exit)> ")
+            if contents == "***!!!EXITTYPE!!!***":
+                file.close()
+                break
+            else:
+                file.write(f"{contents}\n")
+
+
 # Runs program if is not imported                
 if __name__ == "__main__":
     import os, utime, machine, cmd, sys, gc
