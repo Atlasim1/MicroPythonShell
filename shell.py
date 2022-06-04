@@ -38,13 +38,15 @@ class pyshell(cmd.Cmd):
             print("*** Invalid Directory")
         
     def do_del(self,arg):   #delete file command
-        print("Tip: Use rmdir To Delete Folders")
-        temp = input(f"Do you Want to delete {arg}\n?>>")
-        if temp == "y" or temp == "yes":
-            os.remove(arg)
-        else:
-            print("Canceled")
-        
+        try:
+            print("Tip: Use rmdir To Delete Folders")
+            temp = input(f"Do you Want to delete {arg}\n?>>")
+            if temp == "y" or temp == "yes":
+                os.remove(arg)
+            else:
+                print("Canceled")
+        except OSError:
+            print(" *** Incorrect Use Of Command")    
     def do_rmdir(self,arg): # delete directory command
         temp = input(f"Do you Want to delete {arg}\n?>>")
         if temp == "y" or temp == "yes":
@@ -70,8 +72,10 @@ class pyshell(cmd.Cmd):
             print("*** Incorrect Use Of Command")
     
     def do_run(self,arg):       # run file commmand
-        exec(open(arg).read())
-        
+        try:
+            exec(open(arg).read())
+        except OSError:
+            print("*** File Not Found")
     def do_format(self,arg):    #remove every file on the device
         if arg == "--all":
             valid = input("Do you want to delete Every single file on this device INCLUDING THIS SHELL\nType: \"Yes Delete All\"\n!?> ")
@@ -106,9 +110,11 @@ class pyshell(cmd.Cmd):
                 print("Canceled")
                 
     def do_out(self,arg): #ouput contents of file command 
-        cwd = os.getcwd()
-        print("\n",open(f"{cwd}{arg}", "r").read(),"\n")
-    
+        try:
+            cwd = os.getcwd()
+            print("\n",open(f"{cwd}{arg}", "r").read(),"\n")
+        except:
+            print("*** File Not Found")        
     def do_writefile(self,arg): # writes files
         print("File Input / Receive Program")
         filename = input("File Name >")
