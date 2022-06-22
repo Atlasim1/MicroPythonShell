@@ -76,17 +76,18 @@ class pyshell(cmd.Cmd):
             exec(open(arg).read())
         except OSError:
             print("*** File Not Found")
+
     def do_format(self,arg):    #remove every file on the device
-        if arg == "--all":
+        if arg == "--all": # if arg to delete all
             valid = input("Do you want to delete Every single file on this device INCLUDING THIS SHELL\nType: \"Yes Delete All\"\n!?> ")
             if valid == "Yes Delete All":
                 cur = os.listdir()
                 for x in range(len(cur)):
-                    try:
-                        os.remove(cur[x])
+                    try: #except is directory
+                        os.remove(cur[x]) # try to remove file
                         print("Removed",cur[x])
                     except OSError:
-                        os.rmdir(cur[x])
+                        os.rmdir(cur[x]) # if failed, remove directory
                         print("Removed",cur[x])
                 print("Removed Every File\nDone!")
             else:
