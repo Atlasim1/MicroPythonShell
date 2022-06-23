@@ -4,38 +4,60 @@ import os, utime, machine, cmd, sys, gc
 class pyshell(cmd.Cmd):
     #Required Values for cmd Lib
     intro = "MicroPython Shell \nType ? or help For Help"
-    prompt = ">>>"
+    prompt = ">>> "
     
     def do_reset(self, arg):    #Reset commands to reset device
-        if arg == "-s":
-            machine.soft_reset()
-        elif arg == "-f":
-            machine.bootloader()
-        else:
-            conf = input("Reset The Machine? (May Disconnect Serial Comms)")
-            if conf == "y" or conf == "yes":
-                machine.reset
+        try:
+            if arg == "-s":
+                machine.soft_reset()
+            elif arg == "-f":
+                machine.bootloader()
             else:
-                print("Cancelled Reset")
+                conf = input("Reset The Machine? (May Disconnect Serial Comms)")
+                if conf == "y" or conf == "yes":
+                    machine.reset
+                else:
+                    print("Cancelled Reset")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
 
+        
     def do_ls(self, arg):   #list currrent directory command
-        temp = os.listdir()
-        print("Directory of \"",os.getcwd(),"\" :")
-        print(*temp, sep = " | ")   #temp = array of current dir contents  | sep = separator for * method
+        try:
+            temp = os.listdir()
+            print("Directory of \"",os.getcwd(),"\" :")
+            print(*temp, sep = " | ")   #temp = array of current dir contents  | sep = separator for * method
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
         
     def do_exit(self,arg):  #exit shell command
-        temp = input("ExitShell?\n?>>")
-        if temp == "yes" or temp == "y":
-            print("Closed Shell")
-            sys.exit()
-        else:
-            print("Canceled")
+        try:
+            temp = input("ExitShell?\n?>>")
+            if temp == "yes" or temp == "y":
+                print("Closed Shell")
+                sys.exit()
+            else:
+                print("Canceled")
+        except MemoryError:
+            print("*** No Memory Available, Closing Anyways")
+            sys.exit("Memory Failure")
+        except NameError as error:
+            print(f"*** Import Missing, Crashing To exit ({error})")
+            raise NameError("Could not Load Required Module To Exit")
             
     def do_cd(self,arg):    #change dir command
         try:
             os.chdir(arg)
         except OSError:
             print("*** Invalid Directory")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
         
     def do_del(self,arg):   #delete file command
         try:
@@ -47,6 +69,11 @@ class pyshell(cmd.Cmd):
                 print("Canceled")
         except OSError:
             print(" *** Incorrect Use Of Command")    
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
+            
     def do_rmdir(self,arg): # delete directory command
         temp = input(f"Do you Want to delete {arg}\n?>>")
         if temp == "y" or temp == "yes":
@@ -55,6 +82,10 @@ class pyshell(cmd.Cmd):
             except OSError as error:
                 print("*** ", error)
                 print("*** Cannot Remove Directory\nTip : You must empty a directory before removing it")
+            except MemoryError:
+                print("*** No Memory Available")
+            except NameError as error:
+                print(f"*** Import Missing ({error})")
         else:
             print("Canceled")
             
@@ -63,6 +94,10 @@ class pyshell(cmd.Cmd):
             os.mkdir(arg)
         except OSError:
             print("*** Incorrect Use Of Command")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
             
     def do_rename(self,arg):    # rename file command
         args = arg.split(" ")
@@ -70,12 +105,20 @@ class pyshell(cmd.Cmd):
             os.rename(args[0], args[1])
         except OSError:
             print("*** Incorrect Use Of Command")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
     
     def do_run(self,arg):       # run file commmand
         try:
             exec(open(arg).read())
         except OSError:
             print("*** File Not Found")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
 
     def do_format(self,arg):    #remove every file on the device
         if arg == "--all": # if arg to delete all
@@ -89,6 +132,8 @@ class pyshell(cmd.Cmd):
                     except OSError:
                         os.rmdir(cur[x]) # if failed, remove directory
                         print("Removed",cur[x])
+                    except NameError as error:
+                        print(f"*** Import Missing ({error})")
                 print("Removed Every File\nDone!")
             else:
                 print("Canceled")
@@ -106,6 +151,8 @@ class pyshell(cmd.Cmd):
                             except OSError: # will trigger if file is directory 
                                 os.rmdir(cur[x]) #remove dir
                                 print("Removed",cur[x]) #log
+                            except NameError as error:
+                                print(f"*** Import Missing ({error})")
                 print("Removed Every File\nDone!")
             else:
                 print("Canceled")
@@ -114,8 +161,13 @@ class pyshell(cmd.Cmd):
         try:
             cwd = os.getcwd()
             print("\n",open(f"{cwd}{arg}", "r").read(),"\n")
-        except:
+        except OSError:
             print("*** File Not Found")        
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
+            
     def do_writefile(self,arg): # writes files
         print("File Input / Receive Program")
         filename = input("File Name >")
@@ -127,9 +179,69 @@ class pyshell(cmd.Cmd):
                 break
             else:
                 file.write(f"{contents}\n")
-
-
-# Runs program if is not imported                
+        
+    def do_loadmod(self,args):
+        try:
+            os.rename(f"./{args}",f"/modules/{args}.py")
+        except OSError:
+            print("*** Bad File Name")
+        except MemoryError:
+            print("*** No Memory Available")    
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
+                    
+    def do_mem(self,args):
+        if args == "avail":
+            free = gc.mem_free()
+            print(f"Memory Available : {gc.mem_free()} Bytes")
+        elif args == "free":
+            old = gc.mem_free()
+            gc.collect
+            new = gc.mem_free()
+            print(f"Collected {old - new} Bytes of garbage")
+        elif args == "fill":
+            print("Filling Memory")
+            count = 1
+            while True:
+                try:
+                    exec(f"useless{count} = \"f\"")
+                except MemoryError:
+                    break
+                count = count + 1    
+            print("Filled Memory! (You may have to fucking die)")
+        elif args == "unfill":
+            print("Unloading All Modules From Memory")
+            number = 0
+            todel = dir()
+            while True:
+                try:
+                    exec(f"del {todel[number]}")
+                    number = number + 1
+                except IndexError:
+                    print("Unloaded All Modules!")
+                    break
+        elif args == "dump":
+            temp = dir()
+            print(f"Memory Contents :")
+            print(*temp, sep = " | ")
+        elif args == "restore":
+            print("Attempting to restore Memory Contents")
+            exec("import os, utime, machine, cmd, sys, gc")
+            print("Attempted to restore Memory Contents")
+        else:
+            print("*** Incorrect use of command ")
+            
+    def default(self,args):
+        try:
+            exec(open(f"/modules/{args}.py").read())
+        except OSError:
+            print("*** Bad command or Module Name")
+        except MemoryError:
+            print("*** No Memory Available")
+        except NameError as error:
+            print(f"*** Import Missing ({error})")
+            
+        # Runs program if is not imported                
 if __name__ == "__main__":
     import os, utime, machine, cmd, sys, gc
     pyshell().cmdloop()
