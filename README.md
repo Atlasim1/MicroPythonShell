@@ -27,6 +27,8 @@ You can easily write files, do file management and run programs using simple com
 
 - Fill Memory With Garbage :)
 
+- Install And Remove programs with built-in tools
+
 # Install
 
 Installing usually depends on how you transfer files to your micro controller. 
