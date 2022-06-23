@@ -255,7 +255,7 @@ class pyshell(cmd.Cmd):
                 print(f"*** Import Missing ({error})")
         elif argsls[0] == "remove":
             try:
-                exec(open(f"{argsls[1]}.rem").read())
+                exec(open(f"/modules/uninst{argsls[1]}.rem").read())
             except OSError:
                 try:
                     os.remove(f"/modules/{argsls[1]}.prg")
@@ -266,6 +266,12 @@ class pyshell(cmd.Cmd):
                 exec(open(f"{argsls[1]}.ins").read())
             except OSError:
                 print("*** Invalid Install File\nTip : If your program dosent have an install file, use \"programs load\"")
+        elif argsls[0] == "setup":
+            try:
+                os.mkdir("/modules")
+                os.mkdir("/modules/uninst")
+            except OSError:
+                print("*** Programs aleready Setup")
         else:
             print("*** Incorrect Use Of Commands")
                     
