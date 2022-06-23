@@ -230,10 +230,49 @@ class pyshell(cmd.Cmd):
             print("Attempted to restore Memory Contents")
         else:
             print("*** Incorrect use of command ")
-            
+    
+    def do_programs(self,args):
+        argsls = args.split(" ")
+        if argsls[0] == "load":
+            try:
+                os.rename(f"./{argsls[1]}",f"/modules/{argsls[1]}.prg")
+            except OSError:
+                print("*** Bad File Name")
+            except MemoryError:
+                print("*** No Memory Available")    
+            except NameError as error:
+                print(f"*** Import Missing ({error})")
+        elif argsls[0] == "list": 
+            try:
+                temp = os.listdir("/modules/")
+                print("Installed Programs : ")
+                print(*temp, sep = " | ")     
+            except OSError:
+                print("*** Programs folder not located")
+            except MemoryError:
+                print("*** No Memory Available")      
+            except NameError as error:
+                print(f"*** Import Missing ({error})")
+        elif argsls[0] == "remove":
+            try:
+                exec(open(f"{argsls[1]}.rem").read())
+            except OSError:
+                try:
+                    os.remove(f"/modules/{argsls[1]}.prg")
+                except OSError:
+                    print("*** Invalid Program")
+        elif argsls[0] == "install":
+            try:
+                exec(open(f"{argsls[1]}.ins").read())
+            except OSError:
+                print("*** Invalid Install File\nTip : If your program dosent have an install file, use \"programs load\"")
+        else:
+            print("*** Incorrect Use Of Commands")
+                    
+    
     def default(self,args):
         try:
-            exec(open(f"/modules/{args}.py").read())
+            exec(open(f"/modules/{args}.prg").read())
         except OSError:
             print("*** Bad command or Module Name")
         except MemoryError:
