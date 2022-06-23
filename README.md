@@ -107,3 +107,10 @@ Currently, Using a command that is not listed Tries to load it as a Shodule (MpS
   - mem avail > Shows available Memory
   - mem restore > Attempts to restore Imports
   - Does Many Things related to imports and modules
+- programs
+  - Usage : > programs (option)
+  - programs load > Installs a program **without** an install scirpt
+  - programs list > Lists installed Programs
+  - programs remove > Uninstalls a program
+  - programs install > Installs a program **with** an install script
+  - programs setup > Setup Installing programs (Should be done only once)
