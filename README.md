@@ -1,5 +1,5 @@
 # MicroPython Shell
-This program for the Raspberry Pi Pico Microcontroller. (May work on other platforms)
+This program for the Raspberry Pi Pico Microcontroller Running MicroPython. (May work on other platforms)
 #
 You can easily write files, do file management and run programs using simple commands.
 
