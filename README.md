@@ -53,7 +53,7 @@ Command (Argument), [optional argument]
 *Currently, "help" and "?" Do not work because of difficulties
 #
 
-Currently, Using a command that is not listed Tries to load it as a Shodule (MpSh Program) If that fails, It throws an error
+Currently, Using a command that is not listed Tries to load it as a Program If that fails, It throws an error
 
 ---
 
