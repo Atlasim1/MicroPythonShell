@@ -23,6 +23,10 @@ You can easily write files, do file management and run programs using simple com
 
 - Output File Contents
 
+- Do Memory Management
+
+- Fill Memory With Garbage :)
+
 # Install
 
 Installing usually depends on how you transfer files to your micro controller. 
