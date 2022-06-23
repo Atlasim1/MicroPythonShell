@@ -45,6 +45,9 @@ Installing usually depends on how you transfer files to your micro controller.
 Command (Argument), [optional argument]
 
 *Currently, "help" and "?" Do not work because of difficulties
+#
+
+Currently, Using a command that is not listed Tries to load it as a Shodule (MpSh Program) If that fails, It throws an error
 
 ---
 
@@ -88,3 +91,15 @@ Command (Argument), [optional argument]
 - writefile
   - Usage : > writefile
   - Writes a file (one line per line)
+- loadmod
+  - Usage : > loadmod (module)
+  - Loads A Shodule (Program For MpSh)
+- mem 
+  - Usage : > mem (option)
+  - mem dump > Shows Loaded Modules
+  - mem fill > Fills memory with useless variables
+  - mem unfill > Unloads all modules
+  - mem free > Frees up some memory
+  - mem avail > Shows available Memory
+  - mem restore > Attempts to restore Imports
+  - Does Many Things related to imports and modules
