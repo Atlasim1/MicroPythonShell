@@ -119,6 +119,9 @@ class pyshell(cmd.Cmd):
             print("*** No Memory Available")
         except NameError as error:
             print(f"*** Import Missing ({error})")
+        except KeyboardInterrupt:
+            print("*** Terminated Program")
+            sys.exit()
 
     def do_format(self,arg):    #remove every file on the device
         if arg == "--all": # if arg to delete all
@@ -179,37 +182,27 @@ class pyshell(cmd.Cmd):
                 break
             else:
                 file.write(f"{contents}\n")
-        
-    def do_loadmod(self,args):
-        try:
-            os.rename(f"./{args}",f"/modules/{args}.py")
-        except OSError:
-            print("*** Bad File Name")
-        except MemoryError:
-            print("*** No Memory Available")    
-        except NameError as error:
-            print(f"*** Import Missing ({error})")
                     
-    def do_mem(self,args):
-        if args == "avail":
+    def do_mem(self,args): # memory related commmansd
+        if args == "avail": # lists available memory
             free = gc.mem_free()
             print(f"Memory Available : {gc.mem_free()} Bytes")
-        elif args == "free":
+        elif args == "free": # frees up memory
             old = gc.mem_free()
             gc.collect
             new = gc.mem_free()
             print(f"Collected {old - new} Bytes of garbage")
-        elif args == "fill":
+        elif args == "fill": # filles memory with garbaage
             print("Filling Memory")
             count = 1
             while True:
                 try:
-                    exec(f"useless{count} = \"f\"")
-                except MemoryError:
-                    break
+                    exec(f"useless{count} = \"f\"") # create variable useless# with "f"
+                except MemoryError: #when mem is full
+                    break # stop filling
                 count = count + 1    
             print("Filled Memory! (You may have to fucking die)")
-        elif args == "unfill":
+        elif args == "unfill": # unloads all modules
             print("Unloading All Modules From Memory")
             number = 0
             todel = dir()
@@ -220,18 +213,18 @@ class pyshell(cmd.Cmd):
                 except IndexError:
                     print("Unloaded All Modules!")
                     break
-        elif args == "dump":
+        elif args == "dump": # does dir()
             temp = dir()
             print(f"Memory Contents :")
             print(*temp, sep = " | ")
-        elif args == "restore":
+        elif args == "restore": #basic imports
             print("Attempting to restore Memory Contents")
             exec("import os, utime, machine, cmd, sys, gc")
             print("Attempted to restore Memory Contents")
         else:
             print("*** Incorrect use of command ")
     
-    def do_programs(self,args):
+    def do_programs(self,args): # programs related commands
         argsls = args.split(" ")
         if argsls[0] == "load":
             try:
@@ -276,17 +269,17 @@ class pyshell(cmd.Cmd):
             print("*** Incorrect Use Of Commands")
                     
     
-    def default(self,args):
-        try:
-            exec(open(f"/modules/{args}.prg").read())
-        except OSError:
-            print("*** Bad command or Module Name")
-        except MemoryError:
-            print("*** No Memory Available")
-        except NameError as error:
-            print(f"*** Import Missing ({error})")
+    def default(self,args): # when command is not defined
+        try: 
+            exec(open(f"/modules/{args}.prg").read()) # attempt to run as program
+        except OSError: # didint work
+            print("*** Bad command or Module Name") # throw error
+        except MemoryError: # no memory avail
+            print("*** No Memory Available") # throw error
+        except NameError as error: # import missing
+            print(f"*** Import Missing ({error})") # throw error
             
-        # Runs program if is not imported                
+# Runs program if is not imported                
 if __name__ == "__main__":
     import os, utime, machine, cmd, sys, gc
     pyshell().cmdloop()
