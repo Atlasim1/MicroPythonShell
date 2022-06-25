@@ -27,6 +27,8 @@ You can easily write files, do file management and run programs using simple com
 
 - Fill Memory With Garbage :)
 
+- Install And Remove programs with built-in tools
+
 # Install
 
 Installing usually depends on how you transfer files to your micro controller. 
@@ -51,7 +53,7 @@ Command (Argument), [optional argument]
 *Currently, "help" and "?" Do not work because of difficulties
 #
 
-Currently, Using a command that is not listed Tries to load it as a Shodule (MpSh Program) If that fails, It throws an error
+Currently, Using a command that is not listed Tries to load it as a Program If that fails, It throws an error
 
 ---
 
