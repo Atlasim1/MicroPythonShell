@@ -214,9 +214,12 @@ class pyshell(cmd.Cmd):
                     print("Unloaded All Modules!")
                     break
         elif args == "dump": # does dir()
-            temp = dir()
-            print(f"Memory Contents :")
-            print(*temp, sep = " | ")
+            try:
+                temp = dir()
+                print(f"Memory Contents :")
+                print(*temp, sep = " | ")
+            except MemoryError:
+                print("Not Enough Memory")
         elif args == "restore": #basic imports
             print("Attempting to restore Memory Contents")
             exec("import os, utime, machine, cmd, sys, gc")
