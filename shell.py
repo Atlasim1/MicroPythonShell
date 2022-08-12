@@ -1,12 +1,12 @@
 import os, utime, machine, cmd, sys, gc
 
-#Define shell Class
+# Define shell Class
 class pyshell(cmd.Cmd):
-    #Required Values for cmd Lib
+    # Required Values for cmd Lib
     intro = "MicroPython Shell \nType ? or help For Help"
     prompt = ">>> "
     
-    def do_reset(self, arg):    #Reset commands to reset device
+    def do_reset(self, arg):    # Reset commands to reset device
         try:
             if arg == "-s":
                 machine.soft_reset()
@@ -24,11 +24,11 @@ class pyshell(cmd.Cmd):
             print(f"*** Import Missing ({error})")
 
         
-    def do_ls(self, arg):   #list currrent directory command
+    def do_ls(self, arg):   # list currrent directory command
         try:
             temp = os.listdir()
             print("Directory of \"",os.getcwd(),"\" :")
-            print(*temp, sep = " | ")   #temp = array of current dir contents  | sep = separator for * method
+            print(*temp, sep = " | ")   # temp = array of current dir contents  | sep = separator for * method
         except MemoryError:
             print("*** No Memory Available")
         except NameError as error:
@@ -208,9 +208,9 @@ class pyshell(cmd.Cmd):
             todel = dir()
             while True:
                 try:
-                    exec(f"del {todel[number]}")
+                    exec(f"del {todel[number]}") # delete everything in directory
                     number = number + 1
-                except IndexError:
+                except IndexError: # have deleted
                     print("Unloaded All Modules!")
                     break
         elif args == "dump": # does dir()
@@ -224,51 +224,51 @@ class pyshell(cmd.Cmd):
             print("Attempting to restore Memory Contents")
             exec("import os, utime, machine, cmd, sys, gc")
             print("Attempted to restore Memory Contents")
-        else:
+        else: # if command is not existence
             print("*** Incorrect use of command ")
     
     def do_programs(self,args): # programs related commands
         argsls = args.split(" ")
-        if argsls[0] == "load":
+        if argsls[0] == "load": # load program in data 
             try:
-                os.rename(f"./{argsls[1]}",f"/modules/{argsls[1]}.prg")
-            except OSError:
+                os.rename(f"./{argsls[1]}",f"/modules/{argsls[1]}.prg") # put program in programs folder
+            except OSError: # program dosent exist
                 print("*** Bad File Name")
-            except MemoryError:
+            except MemoryError: # cant ram
                 print("*** No Memory Available")    
-            except NameError as error:
+            except NameError as error: # import not exist
                 print(f"*** Import Missing ({error})")
-        elif argsls[0] == "list": 
+        elif argsls[0] == "list": # list the "Modules" directory
             try:
-                temp = os.listdir("/modules/")
-                print("Installed Programs : ")
-                print(*temp, sep = " | ")     
-            except OSError:
+                temp = os.listdir("/modules/") # get dir
+                print("Installed Programs : ") # print titile
+                print(*temp, sep = " | ")     # print dir
+            except OSError: # no modules folder
                 print("*** Programs folder not located")
-            except MemoryError:
+            except MemoryError: # cant ram
                 print("*** No Memory Available")      
-            except NameError as error:
+            except NameError as error: # cant use module
                 print(f"*** Import Missing ({error})")
-        elif argsls[0] == "remove":
-            try:
+        elif argsls[0] == "remove": # remove program 
+            try: #run uninstaller
                 exec(open(f"/modules/uninst{argsls[1]}.rem").read())
-            except OSError:
+            except OSError: # if no uninstaller
                 try:
-                    os.remove(f"/modules/{argsls[1]}.prg")
+                    os.remove(f"/modules/{argsls[1]}.prg") # delete program file
                 except OSError:
-                    print("*** Invalid Program")
-        elif argsls[0] == "install":
-            try:
+                    print("*** Invalid Program") # program dosent exist 
+        elif argsls[0] == "install": # intall module 
+            try: # try to run install file 
                 exec(open(f"{argsls[1]}.ins").read())
-            except OSError:
+            except OSError: # no setup file
                 print("*** Invalid Install File\nTip : If your program dosent have an install file, use \"programs load\"")
-        elif argsls[0] == "setup":
+        elif argsls[0] == "setup": # addd modules directory
             try:
                 os.mkdir("/modules")
                 os.mkdir("/modules/uninst")
-            except OSError:
+            except OSError: # already exist
                 print("*** Programs aleready Setup")
-        else:
+        else: # sub-command not found 
             print("*** Incorrect Use Of Commands")
                     
     
