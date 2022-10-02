@@ -1,3 +1,6 @@
+# Notice 
+The Developement of this program has been moved to Atlasim1/PicoOS And this Repository Will No longer get updates
+
 # MicroPython Shell
 This program for the Raspberry Pi Pico Microcontroller Running MicroPython. (May work on other platforms)
 #
